@@ -17,25 +17,23 @@ if (!username) {
 
 class ChatApp {
   constructor() {
-      this.chatForm = new ChatForm(FORM_SELECTOR, INPUT_SELECTOR);
-      this.chatList = new ChatList(LIST_SELECTOR, username);
-
-      socket.init('ws://localhost:3001');
-      socket.registerOpenHandler(() => {
-          this.chatForm.init((text) => {
-            let message = new ChatMessage({
-              message: text
-            });
-            socket.sendMessage(message.serialize);
-          });
-          this.chatList.init();
-          socket.registerMessageHandler((data) => {
-            console.log(data);
-            let message = new ChatMessage(data);
-            this.chatList.drawMessage(message.serialize());
-          });
-        }
-      }
+    this.chatForm = new ChatForm(FORM_SELECTOR, INPUT_SELECTOR);
+    this.chatList = new ChatList(LIST_SELECTOR, username);
+    socket.init('ws://localhost:3001');
+    socket.registerOpenHandler(() => {
+      this.chatForm.init((text) => {
+        let message = new ChatMessage({ message: text });
+        socket.sendMessage(message.serialize());
+      });
+      this.chatList.init();
+    });
+    socket.registerMessageHandler((data) => {
+      console.log(data);
+      let message = new ChatMessage(data);
+      this.chatList.drawMessage(message.serialize());
+    });
+  }
+}
 
       class ChatMessage {
         constructor({
